@@ -34,12 +34,26 @@ exit 0
 EOF
 chmod +x files/etc/uci-defaults/99-cleanup-legacy
 
-# 2.3 Clone MT5700 WebUI & AT Server (inotdream/mt5700webui-openwrt-server)
+# 2.3 Fix python-pyserial build dependency (backport upstream fix e2ffecaab6)
+if [ -f feeds/packages/lang/python/python-pyserial/Makefile ]; then
+    sed -i 's/HOST_BUILD_DEPENDS:=.*/HOST_BUILD_DEPENDS:=python-setuptools\/host\nPKG_BUILD_DEPENDS:=python-setuptools\/host/' feeds/packages/lang/python/python-pyserial/Makefile
+fi
+
+# 2.4 Clone MT5700 WebUI & AT Server (inotdream/mt5700webui-openwrt-server)
 rm -rf package/at-webserver package/luci-app-at-webserver
 git clone --depth 1 https://github.com/inotdream/mt5700webui-openwrt-server.git /tmp/mt5700webui-repo
 cp -r /tmp/mt5700webui-repo/at-webserver package/at-webserver
 cp -r /tmp/mt5700webui-repo/luci-app-at-webserver package/luci-app-at-webserver
 rm -rf /tmp/mt5700webui-repo
+
+# Replace nonexistent python3-aiohttp dependency with standard python3-urllib
+sed -i 's/+python3-aiohttp/+python3-urllib/g' package/at-webserver/Makefile
+if [ -f "${PROJECT_DIR}/scripts/patch_at_server.py" ]; then
+    python3 "${PROJECT_DIR}/scripts/patch_at_server.py" package/at-webserver/files/usr/bin/at-server.py || true
+elif [ -f "scripts/patch_at_server.py" ]; then
+    python3 scripts/patch_at_server.py package/at-webserver/files/usr/bin/at-server.py || true
+fi
+
 chmod +x package/at-webserver/files/usr/bin/* package/at-webserver/files/etc/init.d/* package/at-webserver/files/www/cgi-bin/* 2>/dev/null || true
 
 # 3. Clone OpenList & LuCI App (Official OpenListTeam)

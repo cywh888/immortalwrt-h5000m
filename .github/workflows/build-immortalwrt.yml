@@ -138,6 +138,7 @@ jobs:
         echo "- **Included Core Features**:" >> release.txt
         echo "  - \`luci-app-h5000m-fancontrol\` (DTS 设备树智能温控与平滑调速)" >> release.txt
         echo "  - \`luci-app-qmodem-generic\` + \`luci-app-qmodem-next\` (QModem 5G 模组控制、MT5700M SIM 卡槽唤醒与按日流量统计)" >> release.txt
+        echo "  - \`luci-app-at-webserver\` + \`at-webserver\` (MT5700 专属独立现代 WebUI 看板、定时锁频锁小区与 AT WebSocket 服务)" >> release.txt
         echo "  - \`sms-forwarder-next\` (多通道短信自动转发：Telegram / Bark / Webhook / 飞书 / PushDeer)" >> release.txt
         echo "  - \`luci-app-momo\` (Momo with Sing-box 1.14+ 高性能 nftables 透明代理)" >> release.txt
         echo "  - \`luci-app-openlist\` (OpenList 4.2.6 多存储/网盘聚合文件管理系统)" >> release.txt

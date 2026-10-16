@@ -57,6 +57,9 @@
 * **双模组管理控制台**：
   - **`luci-app-qmodem-generic`**：通用美化控制台，提供信号参数（RSRP/RSRQ/SINR）、全频段扫描、PCI 锁小区、频段锁定及**按日持久化流量统计**（中国时区自动切日，重启不丢数据）。
   - **`luci-app-qmodem-next`**：现代化响应式管理后台，提供实时会话式短信收发与完整短信转发配置。
+* **MT5700 专属独立现代 WebUI 看板 ([inotdream/mt5700webui-openwrt-server](https://github.com/inotdream/mt5700webui-openwrt-server))**：
+  - 集成 `at-webserver` 与 `luci-app-at-webserver`，提供独立前端界面（浏览器访问 `http://192.168.1.1/5700/`）。
+  - 拥有专属可视化仪表盘、载波聚合 (CA) 状态、夜间/日间定时自动锁频/锁小区、微信通知及交互式 AT 终端。
 
 ### 3. 📩 全自动多通道短信转发 (`sms-forwarder-next`)
 * 收到运营商流量提醒、验证码或欠费短信时，无需打开路由后台，系统通过后台守护进程即时推送到您的随身设备。
@@ -85,6 +88,7 @@
 | **系统核心** | ImmortalWrt 源码 | ImmortalWrt Team | [immortalwrt/immortalwrt](https://github.com/immortalwrt/immortalwrt) | 固件核心底包 (25.12, Linux 6.12) |
 | **硬件温控** | `luci-app-h5000m-fancontrol` | FAN789 | [FAN789/luci-app-h5000m-fancontrol](https://github.com/FAN789/luci-app-h5000m-fancontrol) | H5000M 硬件风扇温控与调速 |
 | **5G 模组管理** | `luci-app-qmodem-generic` | LianXia233 | [LianXia233/luci-app-qmodem-generic](https://github.com/LianXia233/luci-app-qmodem-generic) | 通用模组控制、MT5700M 唤醒与流量统计 |
+| **MT5700 独立看板** | `at-webserver` / `luci-app-at-webserver` | inotdream | [inotdream/mt5700webui-openwrt-server](https://github.com/inotdream/mt5700webui-openwrt-server) | MT5700 模组现代化看板、WebSocket 守护与定时锁频 |
 | **5G 协议栈** | `qmodem` / `luci-app-qmodem-next` | FUjr | [FUjr/QModem](https://github.com/FUjr/QModem) | QModem 核心、AT 守护与现代 Web 界面 |
 | **短信自动转发**| `sms-forwarder-next` | FUjr | [FUjr/QModem](https://github.com/FUjr/QModem) | 多平台短信监听与 Webhook 自动转发 |
 | **网络代理** | `luci-app-momo` / `momo` | Joseph Mory | [nikkinikki-org/OpenWrt-momo](https://github.com/nikkinikki-org/OpenWrt-momo) | 现代轻量 nftables 透明代理 |
@@ -120,6 +124,13 @@
 * 登录后台，进入 **移动网络 → 模组管理**。
 * 固件启动后会自动识别 MT5700M 并完成 SIM 初始化。如需锁定特定 5G/4G 频段或基站 PCI，可在**射频与小区**页面进行勾选保存。
 * 在概览页面可实时查看基于中国时区的按日累计上传/下载流量。
+
+### 🎛️ MT5700 独立看板 (AT WebServer)
+* **独立前端访问**：浏览器直接打开 `http://192.168.1.1/5700/` 即可进入专属 MT5700 管理控制台。
+* **参数配置**：进入后台 **服务 → AT WebServer**：
+  * **网络连接（推荐）**：连接模式选择 `NETWORK`，IP 设为 `192.168.8.1`，端口 `20249`（MT5700 模组默认网关地址）。
+  * **串口连接**：连接模式选择 `SERIAL`，设备路径选择 `/dev/ttyUSB0`（波特率 `115200`）。
+  * 勾选“启用服务”并保存应用，后台守护进程将自动启动，提供实时信号曲线、CA 载波聚合查看、定时锁频与微信通知。
 
 ### 📩 配置短信自动转发
 1. 进入后台：**调制解调器 → 短信 → 短信转发**。

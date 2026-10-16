@@ -37,6 +37,14 @@ exit 0
 EOF
 chmod +x files/etc/uci-defaults/99-cleanup-mt5700m
 
+# 2.3 Clone MT5700 WebUI & AT Server (inotdream/mt5700webui-openwrt-server)
+rm -rf package/at-webserver package/luci-app-at-webserver
+git clone --depth 1 https://github.com/inotdream/mt5700webui-openwrt-server.git /tmp/mt5700webui-repo
+cp -r /tmp/mt5700webui-repo/at-webserver package/at-webserver
+cp -r /tmp/mt5700webui-repo/luci-app-at-webserver package/luci-app-at-webserver
+rm -rf /tmp/mt5700webui-repo
+chmod +x package/at-webserver/files/usr/bin/* package/at-webserver/files/etc/init.d/* package/at-webserver/files/www/cgi-bin/* 2>/dev/null || true
+
 # 3. Clone OpenList & LuCI App (Official OpenListTeam)
 echo "Configuring OpenList..."
 rm -rf feeds/packages/net/openlist

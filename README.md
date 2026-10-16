@@ -54,9 +54,8 @@
 ### 2. 📶 5G 模块与现代化 QModem 生态
 * **无冲突串口总线**：基于 `ubus-at-daemon` 统一调度，避免多程序争抢物理串口导致模组掉线。
 * **开机自动 SIM 卡初始化**：集成 `qmodem-mt5700-fix` 服务，开机自动执行 `AT^SCICHG=0,1` 唤醒 SIM 卡槽，彻底根除基带返回 `+CME ERROR: 10`（SIM 未识别）的问题。
-* **双模组管理控制台**：
-  - **`luci-app-qmodem-generic`**：通用美化控制台，提供信号参数（RSRP/RSRQ/SINR）、全频段扫描、PCI 锁小区、频段锁定及**按日持久化流量统计**（中国时区自动切日，重启不丢数据）。
-  - **`luci-app-qmodem-next`**：现代化响应式管理后台，提供实时会话式短信收发与完整短信转发配置。
+* **现代化模组控制后台 (`luci-app-qmodem-next`)**：
+  - 官方现代响应式管理后台，提供实时会话式短信收发与完整短信转发配置。
 * **MT5700 专属独立现代 WebUI 看板 ([inotdream/mt5700webui-openwrt-server](https://github.com/inotdream/mt5700webui-openwrt-server))**：
   - 集成 `at-webserver` 与 `luci-app-at-webserver`，提供独立前端界面（浏览器访问 `http://192.168.1.1/5700/`）。
   - 拥有专属可视化仪表盘、载波聚合 (CA) 状态、夜间/日间定时自动锁频/锁小区、微信通知及交互式 AT 终端。
@@ -87,7 +86,6 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **系统核心** | ImmortalWrt 源码 | ImmortalWrt Team | [immortalwrt/immortalwrt](https://github.com/immortalwrt/immortalwrt) | 固件核心底包 (25.12, Linux 6.12) |
 | **硬件温控** | `luci-app-h5000m-fancontrol` | FAN789 | [FAN789/luci-app-h5000m-fancontrol](https://github.com/FAN789/luci-app-h5000m-fancontrol) | H5000M 硬件风扇温控与调速 |
-| **5G 模组管理** | `luci-app-qmodem-generic` | LianXia233 | [LianXia233/luci-app-qmodem-generic](https://github.com/LianXia233/luci-app-qmodem-generic) | 通用模组控制、MT5700M 唤醒与流量统计 |
 | **MT5700 独立看板** | `at-webserver` / `luci-app-at-webserver` | inotdream | [inotdream/mt5700webui-openwrt-server](https://github.com/inotdream/mt5700webui-openwrt-server) | MT5700 模组现代化看板、WebSocket 守护与定时锁频 |
 | **5G 协议栈** | `qmodem` / `luci-app-qmodem-next` | FUjr | [FUjr/QModem](https://github.com/FUjr/QModem) | QModem 核心、AT 守护与现代 Web 界面 |
 | **短信自动转发**| `sms-forwarder-next` | FUjr | [FUjr/QModem](https://github.com/FUjr/QModem) | 多平台短信监听与 Webhook 自动转发 |
@@ -111,7 +109,7 @@
 1. 从 GitHub 仓库的 **[Releases](https://github.com/loong486/immortalwrt-h5000m/releases)** 页面下载最新的 `sysupgrade.bin` 固件包。
 2. 进入路由器后台：**系统 → 备份/升级 → 刷写固件**。
 3. 上传固件包，**勾选“保留配置”**，确认刷写。
-4. > **提示**：固件内置了自动化迁移清理脚本（`99-cleanup-mt5700m`），首次启动会自动重置旧版菜单临时缓存，原有的 LAN IP、Wi-Fi 密码、Momo 节点规则均会完好保留。
+4. > **提示**：固件内置了自动化迁移清理脚本（`99-cleanup-legacy`），首次启动会自动重置旧版菜单临时缓存并清理残留旧配置，原有的 LAN IP、Wi-Fi 密码、Momo 节点规则均会完好保留。
 
 ### 3. 全新安装 (不保留配置)
 首次从官方原厂固件或其他第三方固件切换时，建议取消勾选“保留配置”进行全新刷写，以获得最纯净稳定的运行环境。
@@ -121,9 +119,8 @@
 ## ⚙️ 核心功能配置指南
 
 ### 📶 5G 模组与联网调试
-* 登录后台，进入 **移动网络 → 模组管理**。
-* 固件启动后会自动识别 MT5700M 并完成 SIM 初始化。如需锁定特定 5G/4G 频段或基站 PCI，可在**射频与小区**页面进行勾选保存。
-* 在概览页面可实时查看基于中国时区的按日累计上传/下载流量。
+* 固件启动后会自动识别 MT5700M 并完成 SIM 初始化。
+* 可在 **调制解调器 (Modem) / 服务** 中查看模组连接状态，或通过专属的 **AT WebServer (`/5700/`)** 看板进行详细射频参数、载波聚合 (CA) 监控与锁频配置。
 
 ### 🎛️ MT5700 独立看板 (AT WebServer)
 * **独立前端访问**：浏览器直接打开 `http://192.168.1.1/5700/` 即可进入专属 MT5700 管理控制台。

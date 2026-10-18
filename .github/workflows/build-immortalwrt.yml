@@ -10,7 +10,7 @@ on:
         default: 'true'
         type: boolean
   schedule:
-    - cron: '0 18 * * 1' # Weekly build every Tuesday at 02:00 UTC+8
+    - cron: '0 0 * * 3' # Weekly build every Wednesday at 08:00 (UTC+8 / Beijing Time)
   push:
     branches:
       - main
